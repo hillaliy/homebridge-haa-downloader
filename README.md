@@ -7,7 +7,7 @@
 
 # Homebridge HAA Downloader
 
-[![Downloads](https://img.shields.io/npm/dt/homebridge-midea-air.svg?color=critical)](https://www.npmjs.com/package/homebridge-haa-downloader)
+[![Downloads](https://img.shields.io/npm/dt/homebridge-haa-downloader.svg?color=critical)](https://www.npmjs.com/package/homebridge-haa-downloader)
 [![Version](https://img.shields.io/npm/v/homebridge-haa-downloader)](https://www.npmjs.com/package/homebridge-haa-downloader)<br>
 [![Homebridge Discord](https://img.shields.io/discord/432663330281226270?color=728ED5&logo=discord&label=discord)](https://discord.gg/WE4eqqjZ)<br>
 
