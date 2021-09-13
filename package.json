@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "Homebridge plugin for download HAA updates",
   "main": "dist/index.js",
+  "files": [
+    "/dist",
+    "README.md",
+    "LICENSE",
+    "config.schema.json"
+],
   "scripts": {
     "clean": "rimraf ./dist",
     "watch": "npm run build && npm link && nodemon",
-    "build": "rimraf ./dist && tsc",
-    "prepublishOnly": "npm run lint && npm run build",
-    "postpublish": "npm run clean",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf ./dist && tsc"
   },
   "author": "Yossi Hillali <hillaliy@me.com>",
   "engines": {
@@ -24,10 +27,6 @@
     "haa"
   ],
   "license": "ISC",
-  "files": [
-    "LICENSE",
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/hillaliy/homebridge-haa-downloader"
