@@ -7,5 +7,5 @@ import { haaDownloaderPlatform } from './platform';
  * This method registers the platform with Homebridge
  */
 export = (api: API) => {
-  api.registerPlatform('homebridge-haa-downloader', 'haa-downloader', haaDownloaderPlatform);
+  api.registerPlatform(PLATFORM_NAME, haaDownloaderPlatform);
 };
