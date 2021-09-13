@@ -30,6 +30,8 @@ If you like this plugin or want to contribute to future development, a donation 
 ## Description
 
 HAA - [Home Accessory Architect](https://github.com/RavenSystem/esp-homekit-devices/wiki/Home) is a native HomeKit support to any device with an ESP8266 or ESP8285 microcontroller. The project is written by José Antonio Jiménez Campos / RavenSystem.
+This plugin create Occupancy sensor that alart when an HAA update is available and a swithch to pull the update files.
+This plugin is for those who use custom update server.
 
 ## Configuration
 
