@@ -55,7 +55,6 @@ class haaDownloaderPlatform {
             ;
         }
         ;
-        this.log.info(this.config['interval'], this.config['directory']);
         this.checkUpdate();
         setInterval(() => {
             this.checkUpdate();
