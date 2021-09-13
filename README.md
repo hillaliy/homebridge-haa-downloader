@@ -16,10 +16,6 @@ If you like this plugin or want to contribute to future development, a donation 
 
 ## [Homebridge](https://github.com/nfarina/homebridge) plugin to download HAA (Home Accessory Architect) updates.
 
-## Description
-
-[HAA]("https://github.com/RavenSystem/esp-homekit-devices/wiki/Home") - Home Accessory Architect is a native HomeKit support to any device with an ESP8266 or ESP8285 microcontroller. The project is written by José Antonio Jiménez Campos / RavenSystem.
-
 <!-- <img src="branding/Air_Conditioner.png" width="200px"> &nbsp;
 <img src="branding/Dehumidifier.jpeg" width="200px"> -->
 
@@ -30,6 +26,10 @@ If you like this plugin or want to contribute to future development, a donation 
 <img src="https://img.shields.io/badge/iOS-%3E%3D14.0.0-brightgreen">
 
 <SPAN ALIGN="Left">
+
+## Description
+
+[HAA]("https://github.com/RavenSystem/esp-homekit-devices/wiki/Home") - Home Accessory Architect is a native HomeKit support to any device with an ESP8266 or ESP8285 microcontroller. The project is written by José Antonio Jiménez Campos / RavenSystem.
 
 ## Configuration
 
