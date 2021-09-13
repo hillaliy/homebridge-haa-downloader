@@ -2,7 +2,6 @@
   "pluginAlias": "haa-downloader",
   "pluginType": "platform",
   "singular": true,
-  "customUi": false,
   "headerDisplay": "Homebridge plugin for download HAA updates",
   "footerDisplay": "Created by @hillaliy",
   "schema": {
@@ -12,14 +11,15 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "haa-downloader",
+        "default": "HAA-Downloader",
       "interval": {
         "title": "Update interval in hours",
         "description": "Time in hours between each status polling, Default is 24",
         "type": "integer",
-        "default": 24,
+        "required": true,
+        "default": 1,
         "minimum": 1,
-        "maximum": 72
+        "maximum": 24
         },
         "directory": {
           "title": "Download Directory",
@@ -36,7 +36,6 @@
       "key": "properties",
       "type": "array",
       "items": [
-        "name",
         "interval",
         "directory"
       ]
