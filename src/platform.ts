@@ -24,9 +24,6 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
     this.api.on('didFinishLaunching', () => {
       this.log.debug('Executed didFinishLaunching callback');
 
-      this.log = log;
-      this.config = config;
-
       this.onReady();
     });
   };
@@ -34,8 +31,8 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
   onReady() {
     const Devices = [
       {
-        UniqueId: 'haaDownloader',
-        DisplayName: 'haaDownloaderPlatform',
+        UniqueId: '02182017',
+        DisplayName: 'HAADownloader',
       }
     ];
 
@@ -43,20 +40,25 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
       const uuid = this.api.hap.uuid.generate(device.UniqueId);
       const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
       if (existingAccessory) {
-        this.log.info('Restoring existing accessory from cache:', existingAccessory.displayName);
-        existingAccessory.context.device = device;
+        this.log.debug('Restoring existing accessory from cache:', existingAccessory.displayName);
+        existingAccessory.context.deviceId = device.UniqueId;
+        existingAccessory.context.name = device.DisplayName;
         this.api.updatePlatformAccessories([existingAccessory]);
         new haaDownloaderAccessory(this, existingAccessory);
+        this.configureAccessory(existingAccessory);
         // this.api.unregisterPlatformAccessories(PLATFORM_NAME, PLUGIN_NAME, [existingAccessory]);
-        // this.log.info('Removing existing accessory from cache:', existingAccessory.displayName);
+        // this.log.debug('Removing existing accessory from cache:', existingAccessory.displayName);
       } else {
-        this.log.info('Adding new accessory:', device.DisplayName);
+        this.log.debug('Adding new accessory:', device.DisplayName);
         const accessory = new this.api.platformAccessory(device.DisplayName, uuid);
-        accessory.context.device = device;
+        accessory.context.deviceId = device.UniqueId;
+        accessory.context.name = device.DisplayName
         new haaDownloaderAccessory(this, accessory);
-        this.api.registerPlatformAccessories(PLATFORM_NAME, PLUGIN_NAME, [accessory]);
+        this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
+        this.configureAccessory(accessory);
       };
     };
+
     this.checkUpdate();
     setInterval(() => {
       this.checkUpdate();
@@ -64,7 +66,7 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
   };
 
   configureAccessory(accessory: PlatformAccessory) {
-    this.log.info('Loading accessory from cache:', accessory.displayName);
+    this.log.debug('Loading accessory from cache:', accessory.displayName);
     // add the restored accessory to the accessories cache so we can track if it has already been registered
     this.accessories.push(accessory);
   };
@@ -102,7 +104,7 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
     for (const Url in files) {
       const downloader = new Downloader({
         url: files[Url],
-        directory: "../haa", //This folder will be created, if it doesn't exist.
+        directory: this.config['directory'], //This folder will be created, if it doesn't exist.
         cloneFiles: false //This will cause the downloader to re-write an existing file.        
       })
       try {
