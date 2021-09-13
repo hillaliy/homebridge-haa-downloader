@@ -32,8 +32,8 @@ If you like this plugin or want to contribute to future development, a donation 
 Add this to the platforms array in your config.json:
 
        {
-            "name": "haa-downloader",
-            "interval": 24,
+            "name": "HAA-Downloader",
+            "interval": 1,
             "platform": "haa-downloader"
         }
 
