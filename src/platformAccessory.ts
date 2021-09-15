@@ -18,7 +18,9 @@ export class haaDownloaderAccessory {
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Home Accessory Architect')
       .setCharacteristic(this.platform.Characteristic.Model, 'Home Accessory Architect')
-      .setCharacteristic(this.platform.Characteristic.FirmwareRevision, this.firmwareVersion);
+      .setCharacteristic(this.platform.Characteristic.FirmwareRevision, this.firmwareVersion)
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, '02182017');
+
     // Switch
     // create a new Switch service
     this.switchService = this.accessory.getService(this.platform.Service.Switch) || this.accessory.addService(this.platform.Service.Switch);
