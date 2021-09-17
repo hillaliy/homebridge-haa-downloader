@@ -11,24 +11,24 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "HAA-Downloader",
+        "default": "HAA-Downloader"
+      },
       "interval": {
         "title": "Update interval in hours",
-        "description": "Time in hours between each status polling, Default is 24",
+        "description": "Time in hours between each status polling, Default is 12",
         "type": "integer",
         "required": true,
-        "default": 1,
+        "default": 12,
         "minimum": 1,
         "maximum": 24
         },
-        "directory": {
-          "title": "Download Directory",
-          "description": "The path to download directory",
-          "type": "string",
-          "required": true,
-          "default": "../haa"
+      "directory": {
+        "title": "Download Directory",
+        "description": "The path to download directory",
+        "type": "string",
+        "required": true,
+        "default": "../haa"
         }
-      }
     }
   },
   "layout": [
@@ -36,6 +36,7 @@
       "key": "properties",
       "type": "array",
       "items": [
+        "name",
         "interval",
         "directory"
       ]
