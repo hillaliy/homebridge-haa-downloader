@@ -98,7 +98,7 @@ class haaDownloaderPlatform {
             'otamain.bin.sec': `${path}/${this.latestRelease}/otamain.bin.sec`,
             'otaversion': `${path}/${this.latestRelease}/otaversion`
         };
-        this.log.info('Starting download...');
+        this.log.info(`Starting download version: ${this.latestRelease}`);
         for (const Url in files) {
             const downloader = new Downloader({
                 url: files[Url],
