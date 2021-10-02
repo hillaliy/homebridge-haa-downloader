@@ -18,7 +18,7 @@ class haaDownloaderAccessory {
         // create a new Switch service
         this.switchService = this.accessory.getService(this.platform.Service.Switch) || this.accessory.addService(this.platform.Service.Switch);
         // configure Switch name
-        this.switchService.setCharacteristic(this.platform.Characteristic.Name, 'Update Button');
+        this.switchService.setCharacteristic(this.platform.Characteristic.Name, 'Pull update');
         // create handlers for required characteristics
         this.switchService.getCharacteristic(this.platform.Characteristic.On)
             .onGet(this.handleOnGet.bind(this))
