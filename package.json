@@ -1,6 +1,6 @@
 {
   "name": "homebridge-haa-downloader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Homebridge plugin for download HAA updates",
   "main": "dist/index.js",
   "files": [
