@@ -76,13 +76,20 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
       // token: 'PUT-YOUR-TOKEN-HERE',  // personal access token (can be omitted to use the v3 api)
       repo: 'haa',                      // repository name
       owner: 'RavenSystem',             // repository owner
-      currentVersion: this.latestRelease      // your app's current version
+      currentVersion: '1.0.0',      // your app's current version
+      // fetchTags: true
     };
     versionCheck(options, (error: any, update: any) => {
-      if (error) throw error;
+      if (error) {
+        throw error;
+        process.exit(-1);
+      };
       if (update) {
         this.log.info('An update is available! ' + update.name);
-        this.latestRelease = JSON.stringify(update.tag).slice(9, 14);
+        this.latestRelease = JSON.stringify(update.tag).slice(9, 15);
+        this.log.info('Latest Release:', this.latestRelease)
+      } else {
+        this.log.info('Up to date.');
       };
     });
   };
