@@ -28,7 +28,14 @@
         "type": "string",
         "required": true,
         "default": "../haa"
-        }
+        },
+      "currentVersionFile": {
+        "title": "Current Version File",
+        "description": "The path to save Version file",
+        "type": "string",
+        "required": true,
+        "default": "../currentVersion.txt"
+      }
     }
   },
   "layout": [
@@ -38,7 +45,8 @@
       "items": [
         "name",
         "interval",
-        "directory"
+        "directory",
+        "currentVersionFile"
       ]
     }
   ]
