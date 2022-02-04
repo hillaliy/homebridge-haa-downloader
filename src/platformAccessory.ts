@@ -60,6 +60,7 @@ export class haaDownloaderAccessory {
     this.platform.log.debug('Triggered SET Update Activate');
     this.updateOn = true;
     this.platform.pullUpdate();
+    this.platform.currentVersion = this.platform.latestRelease;
     setTimeout(() => {
       this.updateDetected = false;
     }, 8000);
@@ -69,7 +70,6 @@ export class haaDownloaderAccessory {
   handleUpdateDetectedGet() {
     this.platform.log.debug('Triggered GET Update Detected');
     if (this.platform.currentVersion !== this.platform.latestRelease) {
-      this.platform.currentVersion = this.platform.latestRelease;
       this.updateDetected = true;
     };
     return this.updateDetected;
