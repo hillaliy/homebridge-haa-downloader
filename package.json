@@ -1,6 +1,6 @@
 {
   "name": "homebridge-haa-downloader",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Homebridge plugin for download HAA updates",
   "main": "dist/index.js",
   "files": [
@@ -8,7 +8,7 @@
     "README.md",
     "LICENSE",
     "config.schema.json"
-],
+  ],
   "scripts": {
     "clean": "rimraf ./dist",
     "watch": "npm run build && npm link && nodemon",
@@ -52,5 +52,5 @@
   "funding": {
     "type": "paypal",
     "url": "https://www.paypal.me/hillaliy"
-}
+  }
 }
