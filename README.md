@@ -41,6 +41,7 @@ Add this to the platforms array in your config.json:
             "name": "HAA-Downloader",
             "interval": 1,
             "directory": "../HaaUpdates",
+            "currentVersionFile": "../currentVersion.txt",
             "platform": "haa-downloader"
         }
 
