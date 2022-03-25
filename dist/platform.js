@@ -5,19 +5,9 @@ const settings_1 = require("./settings");
 const platformAccessory_1 = require("./platformAccessory");
 const Downloader = require('nodejs-file-downloader');
 const versionCheck = require('github-version-checker');
-var fs = require('fs');
+const fs = require('fs');
 class haaDownloaderPlatform {
-    constructor(log, config, api, currentVersion = fs.readFile(config['currentVersionFile'], (err, data) => {
-        if (err) {
-            this.log.info(err);
-        }
-        this.currentVersion = data.toString();
-    }), latestRelease = fs.readFile(config['currentVersionFile'], (err, data) => {
-        if (err) {
-            this.log.info(err);
-        }
-        this.latestRelease = data.toString();
-    })) {
+    constructor(log, config, api, currentVersion = '', latestRelease = '') {
         this.log = log;
         this.config = config;
         this.api = api;
@@ -51,8 +41,15 @@ class haaDownloaderPlatform {
                 this.api.updatePlatformAccessories([existingAccessory]);
                 new platformAccessory_1.haaDownloaderAccessory(this, existingAccessory);
                 this.configureAccessory(existingAccessory);
-                // this.api.unregisterPlatformAccessories(PLATFORM_NAME, PLUGIN_NAME, [existingAccessory]);
-                // this.log.debug('Removing existing accessory from cache:', existingAccessory.displayName);
+                fs.readFile(this.config['currentVersionFile'], (error, data) => {
+                    if (error) {
+                        this.log.error(error);
+                    }
+                    else {
+                        this.currentVersion = data.toString();
+                        this.latestRelease = data.toString();
+                    }
+                });
             }
             else {
                 this.log.debug('Adding new accessory:', device.DisplayName);
@@ -62,6 +59,12 @@ class haaDownloaderPlatform {
                 new platformAccessory_1.haaDownloaderAccessory(this, accessory);
                 this.api.registerPlatformAccessories(settings_1.PLUGIN_NAME, settings_1.PLATFORM_NAME, [accessory]);
                 this.configureAccessory(accessory);
+                fs.writeFile(this.config['currentVersionFile'], '1.0.0', (error, data) => {
+                    if (error) {
+                        this.log.error(error);
+                    }
+                    this.log.info('Create current version file successfully!');
+                });
             }
             ;
         }
@@ -80,21 +83,22 @@ class haaDownloaderPlatform {
     ;
     async checkUpdate() {
         const options = {
-            // token: 'PUT-YOUR-TOKEN-HERE',  // personal access token (can be omitted to use the v3 api)
+            // token: 'PUT-YOUR-TOKEN-HERE',  // A personal access token used to access the Github GraphQL API (v4). Can be omitted and instead be read from an env variable called GITHUB_API_TOKEN. When no token can be found, the module will fall back to the Github Rest API (v3).
             repo: 'haa',
             owner: 'RavenSystem',
-            currentVersion: '1.0.0', // your app's current version
-            // fetchTags: true
+            currentVersion: '1.0.0',
+            fetchTags: false,
+            latestOnly: false,
+            excludePrereleases: true // Excludes pre-releases from checks
         };
         versionCheck(options).then((update) => {
             if (update) {
-                this.log.info('An update is available! ' + update.name);
+                // this.log.info('An update is available! ' + update.name)
+                // this.log.info('You are on version ' + this.currentVersion)
                 this.latestRelease = JSON.stringify(update.tag).slice(9, 15);
-                this.log.info('current Version:', this.currentVersion);
-                this.log.info('Latest Release:', this.latestRelease);
             }
             else {
-                this.log.info('Up to date.');
+                this.log.info('You are up to date.');
             }
         }).catch((error) => {
             this.log.error(error);
@@ -126,7 +130,7 @@ class haaDownloaderPlatform {
                 this.log.info(`${Url}`);
             }
             catch (error) {
-                this.log.info('Download failed:', error);
+                this.log.error('Download failed:', error);
             }
             ;
         }
@@ -136,9 +140,10 @@ class haaDownloaderPlatform {
         this.log.info('****************');
         fs.writeFile(this.config['currentVersionFile'], this.currentVersion, (err, data) => {
             if (err) {
-                this.log.info(err);
+                this.log.error(err);
             }
-            this.log.info("The file was saved!");
+            else
+                this.log.info('Current version file updated');
         });
     }
     ;
