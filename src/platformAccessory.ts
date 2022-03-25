@@ -71,6 +71,8 @@ export class haaDownloaderAccessory {
     this.platform.log.debug('Triggered GET Update Detected');
     if (this.platform.currentVersion !== this.platform.latestRelease) {
       this.updateDetected = true;
+      this.platform.log.info('An update is available: ' + this.platform.latestRelease)
+      this.platform.log.info('You are on version ' + this.platform.currentVersion)
     };
     return this.updateDetected;
   };
