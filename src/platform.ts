@@ -5,7 +5,7 @@ import { haaDownloaderAccessory } from './platformAccessory';
 
 const Downloader = require('nodejs-file-downloader');
 const versionCheck = require('github-version-checker');
-var fs = require('fs');
+const fs = require('fs');
 
 export class haaDownloaderPlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
@@ -17,20 +17,8 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
     public readonly log: Logger,
     public readonly config: PlatformConfig,
     public readonly api: API,
-    public currentVersion: string =
-      fs.readFile(config['currentVersionFile'], (err: any, data: string) => {
-        if (err) {
-          this.log.info(err);
-        }
-        this.currentVersion = data.toString();
-      }),
-    public latestRelease: string =
-      fs.readFile(config['currentVersionFile'], (err: any, data: string) => {
-        if (err) {
-          this.log.info(err);
-        }
-        this.latestRelease = data.toString();
-      }),
+    public currentVersion: string = '',
+    public latestRelease: string = ''
   ) {
     this.log.debug('Finished initializing platform:', this.config.name);
     this.api.on('didFinishLaunching', () => {
@@ -57,8 +45,14 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
         this.api.updatePlatformAccessories([existingAccessory]);
         new haaDownloaderAccessory(this, existingAccessory);
         this.configureAccessory(existingAccessory);
-        // this.api.unregisterPlatformAccessories(PLATFORM_NAME, PLUGIN_NAME, [existingAccessory]);
-        // this.log.debug('Removing existing accessory from cache:', existingAccessory.displayName);
+        fs.readFile(this.config['currentVersionFile'], (error: any, data: string) => {
+          if (error) {
+            this.log.error(error);
+          } else {
+            this.currentVersion = data.toString();
+            this.latestRelease = data.toString();
+          }
+        })
       } else {
         this.log.debug('Adding new accessory:', device.DisplayName);
         const accessory = new this.api.platformAccessory(device.DisplayName, uuid);
@@ -67,6 +61,12 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
         new haaDownloaderAccessory(this, accessory);
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
         this.configureAccessory(accessory);
+        fs.writeFile(this.config['currentVersionFile'], '1.0.0', (error: any, data: string) => {
+          if (error) {
+            this.log.error(error);
+          }
+          this.log.info('Create current version file successfully!');
+        });
       };
     };
 
@@ -84,23 +84,25 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
 
   async checkUpdate() {
     const options: any = {
-      // token: 'PUT-YOUR-TOKEN-HERE',  // personal access token (can be omitted to use the v3 api)
-      repo: 'haa',                      // repository name
-      owner: 'RavenSystem',             // repository owner
-      currentVersion: '1.0.0',      // your app's current version
-      // fetchTags: true
+      // token: 'PUT-YOUR-TOKEN-HERE',  // A personal access token used to access the Github GraphQL API (v4). Can be omitted and instead be read from an env variable called GITHUB_API_TOKEN. When no token can be found, the module will fall back to the Github Rest API (v3).
+      repo: 'haa',                      // The name of your Github repository.
+      owner: 'RavenSystem',             // The owner of your Github repository
+      currentVersion: '1.0.0',        // Your app's current version.
+      fetchTags: false,                 // Whether to fetch the repositories' git tags instead of the GitHub releases. Useful when no releases are created, but only tags.
+      latestOnly: false,                // Setting this to true will fetch the latest release only
+      excludePrereleases: true          // Excludes pre-releases from checks
     };
-    versionCheck(options).then((update: { name: string; tag: any; }) => {
+
+    versionCheck(options).then((update: any) => {
       if (update) {
-        this.log.info('An update is available! ' + update.name);
+        // this.log.info('An update is available! ' + update.name)
+        // this.log.info('You are on version ' + this.currentVersion)
         this.latestRelease = JSON.stringify(update.tag).slice(9, 15);
-        this.log.info('current Version:', this.currentVersion);
-        this.log.info('Latest Release:', this.latestRelease);
       } else {
-        this.log.info('Up to date.');
+        this.log.info('You are up to date.')
       }
     }).catch((error: any) => {
-      this.log.error(error);
+      this.log.error(error)
     })
   };
 
@@ -128,7 +130,7 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
         await downloader.download(); //Downloader.download() returns a promise.
         this.log.info(`${Url}`);
       } catch (error) {
-        this.log.info('Download failed:', error)
+        this.log.error('Download failed:', error)
       };
     };
     this.log.info('****************');
@@ -136,9 +138,9 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
     this.log.info('****************');
     fs.writeFile(this.config['currentVersionFile'], this.currentVersion, (err: any, data: string) => {
       if (err) {
-        this.log.info(err);
-      }
-      this.log.info("The file was saved!");
+        this.log.error(err);
+      } else
+        this.log.info('Current version file updated');
     });
   };
 };
