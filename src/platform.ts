@@ -6,6 +6,7 @@ import { haaDownloaderAccessory } from './platformAccessory';
 const Downloader = require('nodejs-file-downloader');
 const versionCheck = require('github-version-checker');
 const fs = require('fs');
+const axios = require('axios');
 
 export class haaDownloaderPlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
@@ -107,28 +108,22 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
   };
 
   async pullUpdate() {
-    const path: string = `https://github.com/RavenSystem/haa/releases/download`;
-    const files: any = {
-      'fullhaaboot.bin': `${path}/${this.latestRelease}/fullhaaboot.bin`,
-      'haaboot.bin': `${path}/${this.latestRelease}/haaboot.bin`,
-      'haaboot.bin.sec': `${path}/${this.latestRelease}/haaboot.bin.sec`,
-      'haamain.bin': `${path}/${this.latestRelease}/haamain.bin`,
-      'haamain.bin.sec': `${path}/${this.latestRelease}/haamain.bin.sec`,
-      'haaversion': `${path}/${this.latestRelease}/haaversion`,
-      'otamain.bin': `${path}/${this.latestRelease}/otamain.bin`,
-      'otamain.bin.sec': `${path}/${this.latestRelease}/otamain.bin.sec`,
-      'otaversion': `${path}/${this.latestRelease}/otaversion`
-    };
+    const url = `https://api.github.com/repos/RavenSystem/haa/releases/tags/${this.latestRelease}`;
+    const response = await axios.get(url);
+    const files = response.data.assets.reduce((fileName: { [x: string]: any; }, asset: { name: string | number; browser_download_url: any; }) => {
+      fileName[asset.name] = asset.browser_download_url;
+      return fileName;
+    }, {});
     this.log.info(`Starting download version: ${this.latestRelease}`);
-    for (const Url in files) {
+    for (const url in files) {
       const downloader = new Downloader({
-        url: files[Url],
-        directory: this.config['directory'], //This folder will be created, if it doesn't exist.
-        cloneFiles: false //This will cause the downloader to re-write an existing file.        
+        url: files[url],
+        directory: this.config['directory'], // This folder will be created, if it doesn't exist.
+        cloneFiles: false // This will cause the downloader to re-write an existing file.        
       })
       try {
-        await downloader.download(); //Downloader.download() returns a promise.
-        this.log.info(`${Url}`);
+        await downloader.download(); // Downloader.download() returns a promise.
+        this.log.info(`${url}`);
       } catch (error) {
         this.log.error('Download failed:', error)
       };
