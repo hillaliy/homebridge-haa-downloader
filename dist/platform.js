@@ -92,18 +92,20 @@ class haaDownloaderPlatform {
             latestOnly: false,
             excludePrereleases: true // Excludes pre-releases from checks
         };
-        versionCheck(options).then((update) => {
+        try {
+            const update = await versionCheck(options);
             if (update) {
-                // this.log.info('An update is available! ' + update.name)
-                // this.log.info('You are on version ' + this.currentVersion)
-                this.latestRelease = JSON.stringify(update.tag).slice(9, 15);
+                this.latestRelease = update.tag.name;
+                // this.log.info(`A new HAA version ${this.latestRelease} is available.`);
+                // this.log.info(`You are on version ${this.currentVersion}`)
             }
             else {
                 this.log.info('You are up to date.');
             }
-        }).catch((error) => {
-            this.log.error(error);
-        });
+        }
+        catch (error) {
+            this.log.error(`Error checking for updates: ${error}`);
+        }
     }
     ;
     async pullUpdate() {

@@ -84,7 +84,17 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
   };
 
   async checkUpdate() {
-    const options: any = {
+    interface GithubVersionCheckOptions {
+      // token?: string;
+      repo: string;
+      owner: string;
+      currentVersion: string;
+      fetchTags?: boolean;
+      latestOnly?: boolean;
+      excludePrereleases?: boolean;
+    }
+
+    const options: GithubVersionCheckOptions = {
       // token: 'PUT-YOUR-TOKEN-HERE',  // A personal access token used to access the Github GraphQL API (v4). Can be omitted and instead be read from an env variable called GITHUB_API_TOKEN. When no token can be found, the module will fall back to the Github Rest API (v3).
       repo: 'haa',                      // The name of your Github repository.
       owner: 'RavenSystem',             // The owner of your Github repository
@@ -94,17 +104,18 @@ export class haaDownloaderPlatform implements DynamicPlatformPlugin {
       excludePrereleases: true          // Excludes pre-releases from checks
     };
 
-    versionCheck(options).then((update: any) => {
+    try {
+      const update = await versionCheck(options);
       if (update) {
-        // this.log.info('An update is available! ' + update.name)
-        // this.log.info('You are on version ' + this.currentVersion)
-        this.latestRelease = JSON.stringify(update.tag).slice(9, 15);
+        this.latestRelease = update.tag.name;
+        // this.log.info(`A new HAA version ${this.latestRelease} is available.`);
+        // this.log.info(`You are on version ${this.currentVersion}`)
       } else {
-        this.log.info('You are up to date.')
+        this.log.info('You are up to date.');
       }
-    }).catch((error: any) => {
-      this.log.error(error)
-    })
+    } catch (error) {
+      this.log.error(`Error checking for updates: ${error}`);
+    }
   };
 
   async pullUpdate() {
